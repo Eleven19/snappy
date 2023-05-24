@@ -8,7 +8,6 @@ val scalaNativeVersions = scalaVersions.map((_, "0.4.12"))
 
 object Deps {
   val munit = "1.0.0-M7"
-  val oslib = "0.9.1"
   val sourcecode = "0.3.0"
 }
 
@@ -37,7 +36,8 @@ trait SnappyModule extends Cross.Module[String] {
 
     trait SnappyTestingModule extends Tests with TestModule.Munit {
       def ivyDeps = Agg(
-        ivy"org.scalameta::munit::${Deps.munit}"
+        ivy"org.scalameta::munit::${Deps.munit}",
+        ivy"org.scalameta::munit-scalacheck::${Deps.munit}"
       )
     }
   }
