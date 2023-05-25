@@ -1,4 +1,4 @@
-import mill._, scalalib._, scalajslib._, scalanativelib._, publish._
+import mill._, scalalib._, scalajslib._, scalanativelib._, scalafmt._, publish._
 //import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.3.1`
 //import de.tobiasroeser.mill.vcs.version.VcsVersion
 
@@ -11,7 +11,7 @@ object Deps {
   val sourcecode = "0.3.0"
 }
 
-trait SnappyPublishModule extends PublishModule with CrossScalaModule {
+trait SnappyPublishModule extends PublishModule with CrossScalaModule with ScalafmtModule {
   def publishVersion: T[String] = T { "0.0.1-M01" }
 
   def pomSettings = PomSettings(
@@ -69,12 +69,12 @@ trait SnappyModule extends Cross.Module[String] {
       }
     }
 
-    def ivyDeps = Agg(
+    override def ivyDeps = Agg(
       ivy"com.lihaoyi::sourcecode::${Deps.sourcecode}"
     )
 
     trait SnappyTestingModule extends Tests with TestModule.Munit {
-      def ivyDeps = Agg(
+      override def ivyDeps = Agg(
         ivy"org.scalameta::munit::${Deps.munit}",
         ivy"org.scalameta::munit-scalacheck::${Deps.munit}"
       )
@@ -103,4 +103,11 @@ trait SnappyModule extends Cross.Module[String] {
     }
   }
 
+}
+
+import mill.eval.{Evaluator, EvaluatorPaths}
+// With this we can now just do ./mill reformatAll __.sources
+// instead of ./mill -w mill.scalalib.scalafmt.ScalafmtModule/reformatAll __.sources
+def reformatAll(evaluator: Evaluator, sources: mill.main.Tasks[Seq[PathRef]]) = T.command {
+  ScalafmtModule.reformatAll(sources)()
 }
