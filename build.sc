@@ -1,4 +1,4 @@
-import mill._, scalalib._, scalajslib._, publish._
+import mill._, scalalib._, scalajslib._, scalanativelib._, publish._
 //import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.3.1`
 //import de.tobiasroeser.mill.vcs.version.VcsVersion
 
@@ -26,10 +26,49 @@ trait SnappyPublishModule extends PublishModule with CrossScalaModule {
   )
 }
 
+trait SnappyPlatformScalaModule extends PlatformScalaModule {
+  def allPlatforms : T[Seq[String]] = T { Seq("jvm", "js", "native")}
+
+  def otherPlatforms : T[Seq[String]] = T {
+    allPlatforms().filterNot(_.equalsIgnoreCase(platformScalaSuffix))
+  }
+
+  def platformPairs:T[Seq[(String,String)]] = T {
+    otherPlatforms().flatMap { platform =>
+      if(platform.equalsIgnoreCase(platformScalaSuffix)) {
+        Seq.empty
+      } else if(platform < platformScalaSuffix) {
+        Seq((platform,platformScalaSuffix))
+      } else {
+        Seq((platformScalaSuffix, platform))
+      }
+    }
+  }
+
+  def platformPairSuffixes:T[Seq[String]] = T {
+    platformPairs().map { case (p1, p2) => s"${p1}-${p2}"}
+  }
+}
+
 object snappy extends Cross[SnappyModule](scalaVersions)
 
 trait SnappyModule extends Cross.Module[String] {
-  trait Shared extends SnappyPublishModule with InnerCrossModule with PlatformScalaModule {
+  trait Shared extends SnappyPublishModule with InnerCrossModule with SnappyPlatformScalaModule {
+
+    // Add additional source folders
+    override def sources: T[Seq[PathRef]] = T.sources {
+      super.sources().flatMap { source =>
+        if(source.path.last.endsWith(platformScalaSuffix)) {
+          Seq(source)
+        } else {
+          val crossPlatformSources = platformPairSuffixes().map { suffix =>
+            PathRef(source.path / _root_.os.up / s"${source.path.last}-${suffix}")
+          }
+          Seq(source) ++ crossPlatformSources
+        }
+      }
+    }
+
     def ivyDeps = Agg(
       ivy"com.lihaoyi::sourcecode::${Deps.sourcecode}"
     )
@@ -46,12 +85,20 @@ trait SnappyModule extends Cross.Module[String] {
     def scalaJSVersion = scalaJSVersions.head._2
   }
 
+  trait SharedNative extends Shared with ScalaNativeModule {
+    def scalaNativeVersion = scalaNativeVersions.head._2
+  }
+
   object core extends Module {
     object jvm extends Shared {
       object test extends Tests with SnappyTestingModule
     }
 
     object js extends SharedJS {
+      object test extends Tests with SnappyTestingModule
+    }
+
+    object native extends SharedNative {
       object test extends Tests with SnappyTestingModule
     }
   }
