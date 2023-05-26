@@ -1,18 +1,23 @@
 import mill._, scalalib._, scalajslib._, scalanativelib._, scalafmt._, publish._
-//import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.3.1`
-//import de.tobiasroeser.mill.vcs.version.VcsVersion
+import scalajslib.api.ModuleKind
+import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.3.1-8-37c08a`
+import de.tobiasroeser.mill.vcs.version.VcsVersion
 
 val scalaVersions = Seq("2.13.10", "3.3.0")
 val scalaJSVersions = scalaVersions.map((_, "1.13.1"))
 val scalaNativeVersions = scalaVersions.map((_, "0.4.12"))
 
 object Deps {
-  val munit = "1.0.0-M7"
-  val sourcecode = "0.3.0"
+  val `cats-effect`       = "3.5.0"
+  val fs2                 = "3.7.0"
+  val munit               = "1.0.0-M7"
+  val `munit-cats-effect` = "2.0.0-M3"
+  val sourcecode          = "0.3.0"
+  val upickle             = "3.1.0"
 }
 
 trait SnappyPublishModule extends PublishModule with CrossScalaModule with ScalafmtModule {
-  def publishVersion: T[String] = T { "0.0.1-M01" }
+  def publishVersion: T[String] = T { VcsVersion.vcsState().format() }
 
   def pomSettings = PomSettings(
     description = "Snapshot testing in Scala",
@@ -70,19 +75,24 @@ trait SnappyModule extends Cross.Module[String] {
     }
 
     override def ivyDeps = Agg(
-      ivy"com.lihaoyi::sourcecode::${Deps.sourcecode}"
+      ivy"org.typelevel::cats-effect::${Deps.`cats-effect`}",
+      ivy"co.fs2::fs2-io::${Deps.fs2}",
+      ivy"com.lihaoyi::sourcecode::${Deps.sourcecode}",
+      ivy"com.lihaoyi::upickle::${Deps.upickle}"
     )
 
     trait SnappyTestingModule extends Tests with TestModule.Munit {
       override def ivyDeps = Agg(
         ivy"org.scalameta::munit::${Deps.munit}",
-        ivy"org.scalameta::munit-scalacheck::${Deps.munit}"
+        ivy"org.scalameta::munit-scalacheck::${Deps.munit}",
+        ivy"org.typelevel::munit-cats-effect::${Deps.`munit-cats-effect`}"
       )
     }
   }
 
   trait SharedJS extends Shared with ScalaJSModule {
     def scalaJSVersion = scalaJSVersions.head._2
+
   }
 
   trait SharedNative extends Shared with ScalaNativeModule {
@@ -95,7 +105,9 @@ trait SnappyModule extends Cross.Module[String] {
     }
 
     object js extends SharedJS {
-      object test extends Tests with SnappyTestingModule
+      object test extends Tests with SnappyTestingModule {
+        def moduleKind = T { ModuleKind.CommonJSModule }
+      }
     }
 
     object native extends SharedNative {
