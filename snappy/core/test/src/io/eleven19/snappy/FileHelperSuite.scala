@@ -14,11 +14,12 @@ class FileHelperSuite extends CatsEffectSuite {
       .assert
   }
 
-  test("Calling rootDirMatching with a test subfolder should work") {
-    val myPath = implicitly[sourcecode.File]
+  test("Calling firstMatchingAncestor with a test subfolder should work") {
+    val myPath = implicitly[sourcecode.File].toPath
     for {
-      _ <- IO.println(s"MyPath: $myPath")
-    } yield assert(true)
+      testDir <- FileHelper.firstMatchingAncestor[IO]("test".r, myPath)
+      //_ <- IO.println(s"TestDir: $testDir")
+    } yield assert(testDir.endsWith("snappy/core/test"))
   }
 }
 

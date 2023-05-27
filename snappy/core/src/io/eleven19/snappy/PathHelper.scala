@@ -1,7 +1,9 @@
 package io.eleven19.snappy
 
 import fs2.io.file.Path
+
 import scala.annotation.tailrec
+import scala.util.matching.Regex
 
 object PathHelper {
   def dropExtension(path:Path):Path = {
@@ -26,6 +28,20 @@ object PathHelper {
         loop(res)
     }
     loop(path)
+  }
+
+  def firstMatchingAncestorWithin(pattern: Regex, path: Path, root:Path): Path = {
+    val stableRoot = root
+    @tailrec
+    def rootDir(path: Path): Path = {
+      (path, path.fileName.toString, path.parent) match {
+        case (_, pathStr, _) if pattern.matches(pathStr) => path
+        case (`stableRoot`, _, _) => path
+        case (_, _, None) => root
+        case (_, _, Some(parent)) => rootDir(parent)
+      }
+    }
+    rootDir(path)
   }
 
   def fileBaseNameAndExtension(path:Path):(String,String) = {

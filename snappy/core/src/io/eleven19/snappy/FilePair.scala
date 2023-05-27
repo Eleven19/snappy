@@ -2,7 +2,9 @@ package io.eleven19.snappy
 
 import fs2.io.file._
 
-final case class FilePair(extension: String, receivedPath: String, expectedPath: String)
+final case class FilePair(extension: String, receivedPath: String, verifiedPath: String){
+
+}
 object FilePair {
   def atRoot(rootPath: Path, path: Path): FilePair = {
     val extension = path.extName
