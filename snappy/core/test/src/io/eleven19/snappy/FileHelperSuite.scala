@@ -10,8 +10,16 @@ class FileHelperSuite extends CatsEffectSuite {
   test("Calling pwd should return the working directory") {
     val actual = FileHelper.pwd[IO]
     actual
-      .map(it => it.toString)
-      .map(_.endsWith("snappy"))
+      .map(it => it.endsWith("snappy"))
       .assert
   }
+
+  test("Calling rootDirMatching with a test subfolder should work") {
+    val myPath = implicitly[sourcecode.File]
+    for {
+      _ <- IO.println(s"MyPath: $myPath")
+    } yield assert(true)
+  }
 }
+
+

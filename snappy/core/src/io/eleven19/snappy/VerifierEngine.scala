@@ -8,11 +8,6 @@
 
 // trait VerifierEngine[A] { self =>
 
-
-
-
-
-
 //   def verify(name: String, target: A)(implicit file: sourcecode.File, line: sourcecode.Line): A = {
 //     val sourcePath = Path(file.value)
 //     val root = rootDir(sourcePath)
