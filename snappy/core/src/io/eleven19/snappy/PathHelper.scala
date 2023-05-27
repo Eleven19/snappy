@@ -53,4 +53,17 @@ object PathHelper {
       (path,ext)
     }
   }
+
+  def splitOnExtensions(path:Path):(Path, String) = {
+    @tailrec
+    def loop(path:Path, extension:String):(Path,String) = {
+      val ext = path.extName
+      if(ext.isEmpty) {
+        (path, extension)
+      } else {
+        loop(dropRight(path, ext.size), ext + extension)
+      }
+    }
+    loop(path, "")
+  }
 }

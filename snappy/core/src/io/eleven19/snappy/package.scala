@@ -22,5 +22,6 @@ package object snappy {
     @inline def fileNameWithoutExtension: String = PathHelper.fileNameWithoutExtension(self)
 
     @inline def splitOnExtension:(Path, String) = PathHelper.splitOnExtension(self)
+    @inline def splitOnExtensions:(Path, String) = PathHelper.splitOnExtensions(self)
   }
 }

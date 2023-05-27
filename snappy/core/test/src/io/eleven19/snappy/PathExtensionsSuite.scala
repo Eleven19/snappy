@@ -48,4 +48,9 @@ class PathExtensionsSuite extends munit.CatsEffectSuite {
     assertEquals(sut.splitOnExtension, (Path("tests/splitOn/testFile.db"), ".bak"))
   }
 
+  test("Calling splitOnExtensions should properly handle multipart extensions") {
+    val sut = Path("home/subdir/baseName.docx.tar.gz")
+    assertEquals(sut.splitOnExtensions, (Path("home/subdir/baseName"), ".docx.tar.gz"))
+  }
+
 }
