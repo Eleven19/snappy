@@ -8,6 +8,7 @@ val scalaJSVersions = scalaVersions.map((_, "1.13.1"))
 val scalaNativeVersions = scalaVersions.map((_, "0.4.12"))
 
 object Deps {
+  val castor              = "0.3.0"
   val `cats-effect`       = "3.5.0"
   val fs2                 = "3.7.0"
   val munit               = "1.0.0-M7"
@@ -77,6 +78,7 @@ trait SnappyModule extends Cross.Module[String] {
     override def ivyDeps = Agg(
       ivy"org.typelevel::cats-effect::${Deps.`cats-effect`}",
       ivy"co.fs2::fs2-io::${Deps.fs2}",
+      ivy"com.lihaoyi::castor::${Deps.castor}",
       ivy"com.lihaoyi::sourcecode::${Deps.sourcecode}",
       ivy"com.lihaoyi::upickle::${Deps.upickle}"
     )

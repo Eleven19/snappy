@@ -8,7 +8,7 @@ class PathExtensionsSuite extends munit.CatsEffectSuite {
     assertEquals(sut.fileNameWithoutExtension, "index")
   }
 
-  test("Calling fileNameWithoutExtension should strip single extension if file has two"){
+  test("Calling fileNameWithoutExtension should strip single extension if file has two") {
     val sut = Path("Foo.verified.txt")
     assertEquals(sut.fileNameWithoutExtension, "Foo.verified")
   }
@@ -18,7 +18,7 @@ class PathExtensionsSuite extends munit.CatsEffectSuite {
     assertEquals(sut.dropExtension, Path("home/alpha/beta/gamma"))
   }
 
-  test("Calling dropExtensions should strip the extension from the Path"){
+  test("Calling dropExtensions should strip the extension from the Path") {
     val sut = Path("/User/tester/home/myfile.foo.bar.baz.json")
     assertEquals(sut.dropExtensions, Path("/User/tester/home/myfile"))
   }
@@ -28,12 +28,12 @@ class PathExtensionsSuite extends munit.CatsEffectSuite {
     assertEquals(sut.fileBaseNameAndExtension, ("Hello", ".txt"))
   }
 
-  test("Calling dropRight should drop the n characters from the right of the path"){
+  test("Calling dropRight should drop the n characters from the right of the path") {
     val sut = Path("/Home/File.12345")
     assertEquals(sut.dropRight(6), Path("/Home/File"))
   }
 
-  test("Calling dropRight with n larger than the Path's String length should return an empty path"){
+  test("Calling dropRight with n larger than the Path's String length should return an empty path") {
     val sut = Path("/Home/Foo")
     assertEquals(sut.dropRight(sut.toString.size), Path(""))
   }
@@ -43,7 +43,9 @@ class PathExtensionsSuite extends munit.CatsEffectSuite {
     assertEquals(sut.splitOnExtension, (Path("tests/splitOn/testFile"), ".csv"))
   }
 
-  test("Calling splitOnExtension should give you the file path (minus the last extension) and the extension for multipart extensions") {
+  test(
+    "Calling splitOnExtension should give you the file path (minus the last extension) and the extension for multipart extensions"
+  ) {
     val sut = Path("tests/splitOn/testFile.db.bak")
     assertEquals(sut.splitOnExtension, (Path("tests/splitOn/testFile.db"), ".bak"))
   }

@@ -14,14 +14,14 @@ package object snappy {
 
   implicit class PathExtensions(val self: Path) extends AnyVal {
 
-    @inline def dropExtension:Path = PathHelper.dropExtension(self)
-    @inline def dropExtensions:Path = PathHelper.dropExtensions(self)
+    @inline def dropExtension: Path = PathHelper.dropExtension(self)
+    @inline def dropExtensions: Path = PathHelper.dropExtensions(self)
 
-    @inline def dropRight(n:Int):Path = PathHelper.dropRight(self, n)
-    @inline def fileBaseNameAndExtension:(String, String) = PathHelper.fileBaseNameAndExtension(self)
+    @inline def dropRight(n: Int): Path = PathHelper.dropRight(self, n)
+    @inline def fileBaseNameAndExtension: (String, String) = PathHelper.fileBaseNameAndExtension(self)
     @inline def fileNameWithoutExtension: String = PathHelper.fileNameWithoutExtension(self)
 
-    @inline def splitOnExtension:(Path, String) = PathHelper.splitOnExtension(self)
-    @inline def splitOnExtensions:(Path, String) = PathHelper.splitOnExtensions(self)
+    @inline def splitOnExtension: (Path, String) = PathHelper.splitOnExtension(self)
+    @inline def splitOnExtensions: (Path, String) = PathHelper.splitOnExtensions(self)
   }
 }

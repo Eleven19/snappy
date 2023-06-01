@@ -13,7 +13,7 @@ class SourceCodeExtensionsSuite extends munit.CatsEffectSuite {
     assertEquals(file.fileNameWithoutExtension, "SourceCodeExtensionsSuite")
   }
 
-  test ("Calling extName on a sourcecode.File should work "){
+  test("Calling extName on a sourcecode.File should work ") {
     val file = implicitly[sourcecode.File]
     assertEquals(file.extName, ".scala")
   }
@@ -24,4 +24,3 @@ class SourceCodeExtensionsSuite extends munit.CatsEffectSuite {
     assertEquals(file.toPath, expected.absolute)
   }
 }
-

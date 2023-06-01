@@ -18,9 +18,7 @@ class FileHelperSuite extends CatsEffectSuite {
     val myPath = implicitly[sourcecode.File].toPath
     for {
       testDir <- FileHelper.firstMatchingAncestor[IO]("test".r, myPath)
-      //_ <- IO.println(s"TestDir: $testDir")
+      // _ <- IO.println(s"TestDir: $testDir")
     } yield assert(testDir.endsWith("snappy/core/test"))
   }
 }
-
-
